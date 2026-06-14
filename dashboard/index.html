@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Among Nobody – Host Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap');
+
+    :root {
+      --red:    #c51111;
+      --space:  #0f0f1a;
+      --navy:   #13132a;
+      --panel:  #1c1c35;
+      --panel2: #242445;
+      --panel3: #2d2d55;
+      --accent: #5865f2;
+      --accent2:#7289ff;
+      --green:  #23d18b;
+      --gold:   #ffd700;
+      --danger: #ed4245;
+      --text:   #e8e8ff;
+      --dim:    #8888aa;
+      --border: rgba(255,255,255,.07);
+      --shadow: 0 4px 24px rgba(0,0,0,.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--space);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.65) 0%, transparent 100%),
+        radial-gradient(1px 1px at 28% 72%, rgba(255,255,255,.45) 0%, transparent 100%),
+        radial-gradient(1px 1px at 44% 33%, rgba(255,255,255,.55) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60% 88%, rgba(255,255,255,.40) 0%, transparent 100%),
+        radial-gradient(1px 1px at 76% 14%, rgba(255,255,255,.50) 0%, transparent 100%),
+        radial-gradient(1px 1px at 88% 55%, rgba(255,255,255,.45) 0%, transparent 100%),
+        radial-gradient(1px 1px at 5%  45%, rgba(255,255,255,.60) 0%, transparent 100%),
+        radial-gradient(1px 1px at 95% 80%, rgba(255,255,255,.35) 0%, transparent 100%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── SCREENS ── */
+    .screen { display: none; position: relative; z-index: 1; }
+    .screen.active { display: flex; }
+
+    /* ── LANDING ── */
+    #landing {
+      min-height: 100vh; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px; padding: 40px 20px;
+    }
+    .logo-wrap img {
+      max-width: 300px; width: 80vw;
+      filter: drop-shadow(0 0 20px rgba(88,101,242,.6));
+      image-rendering: pixelated;
+    }
+    .landing-title {
+      font-size: .85rem; letter-spacing: 4px; text-transform: uppercase; color: var(--dim);
+    }
+    .card {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 16px; padding: 22px 26px;
+      width: 100%; max-width: 460px; box-shadow: var(--shadow);
+    }
+    .card h2 {
+      font-size: .9rem; font-weight: 900; letter-spacing: 1px;
+      margin-bottom: 12px; color: var(--text);
+      text-transform: uppercase;
+    }
+    .input-row { display: flex; gap: 8px; }
+    input[type=text] {
+      flex: 1; background: var(--panel2); border: 1.5px solid var(--panel3);
+      border-radius: 10px; color: var(--text);
+      font-family: 'Nunito', sans-serif; font-size: .95rem; font-weight: 700;
+      padding: 10px 14px; outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input[type=text]::placeholder { color: var(--dim); font-weight: 400; }
+    input[type=text]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,101,242,.2); }
+    button {
+      background: var(--accent); border: none; border-radius: 10px;
+      color: #fff; cursor: pointer; font-family: 'Nunito', sans-serif;
+      font-size: .9rem; font-weight: 900; padding: 10px 18px;
+      transition: background .15s, transform .1s;
+    }
+    button:hover { background: var(--accent2); }
+    button:active { transform: scale(.97); }
+    button.danger { background: var(--danger); }
+    button.danger:hover { background: #f05050; }
+    button.ghost {
+      background: transparent; border: 1.5px solid var(--panel3); color: var(--dim);
+    }
+    button.ghost:hover { border-color: var(--accent); color: var(--text); }
+
+    .divider {
+      text-align: center; color: var(--dim); font-size: .8rem;
+      position: relative; margin: 2px 0; width: 100%; max-width: 460px;
+    }
+    .divider::before, .divider::after {
+      content: ''; position: absolute; top: 50%; width: 44%; height: 1px; background: var(--panel2);
+    }
+    .divider::before { left: 0; } .divider::after { right: 0; }
+
+    #server-list { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; margin-top: 10px; }
+    .server-row {
+      background: var(--panel2); border-radius: 10px;
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 14px; cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: border-color .15s, background .15s;
+    }
+    .server-row:hover { border-color: var(--accent); background: var(--panel3); }
+    .server-code { font-size: 1.3rem; font-weight: 900; letter-spacing: 4px; color: var(--gold); min-width: 72px; }
+    .server-info { flex: 1; }
+    .server-host { font-weight: 700; font-size: .9rem; }
+    .server-players { color: var(--dim); font-size: .75rem; margin-top: 2px; }
+    .server-badge { background: var(--green); color: #000; border-radius: 6px; font-size: .6rem; font-weight: 900; padding: 3px 7px; letter-spacing: 1px; }
+    .server-empty { text-align: center; color: var(--dim); padding: 20px; font-size: .9rem; }
+    #connect-status { font-size: .75rem; color: var(--dim); text-align: center; }
+    #connect-status.ok { color: var(--green); } #connect-status.err { color: var(--danger); }
+
+    /* ── WAITING ── */
+    #waiting {
+      min-height: 100vh; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 28px; padding: 40px 20px; text-align: center;
+    }
+    .crewmate-wrap { position: relative; width: 100px; height: 120px; }
+    .crewmate-svg { width: 100px; height: 120px; filter: drop-shadow(0 0 16px rgba(88,101,242,.6)); animation: bob 2s ease-in-out infinite; }
+    @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .waiting-title { font-size: 1.7rem; font-weight: 900; }
+    .waiting-sub { color: var(--dim); font-size: .9rem; }
+    .waiting-name { color: var(--gold); font-weight: 900; }
+    .dots::after { content:''; animation: dots 1.5s infinite steps(4, end); }
+    @keyframes dots { 0%{content:''} 25%{content:'.'} 50%{content:'..'} 75%{content:'...'} }
+    .pulse-ring {
+      width: 140px; height: 140px; border-radius: 50%; border: 2px solid var(--accent);
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%,-50%) scale(.8);
+      animation: pulse-ring 2s ease-out infinite; opacity: 0;
+    }
+    @keyframes pulse-ring { 0% { transform: translate(-50%,-50%) scale(.8); opacity:.8; } 100% { transform: translate(-50%,-50%) scale(1.9); opacity:0; } }
+
+    /* ── HOST SCREEN ── */
+    #hosting { min-height: 100vh; flex-direction: column; }
+
+    .host-header {
+      background: var(--red); padding: 12px 24px;
+      display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+      box-shadow: 0 2px 16px rgba(0,0,0,.4); flex-shrink: 0;
+    }
+    .host-header img { height: 34px; image-rendering: pixelated; filter: brightness(0) invert(1); }
+    .host-header-title { font-size: 1.1rem; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; flex: 1; }
+    .phase-badge {
+      background: var(--panel2); border-radius: 20px;
+      padding: 5px 14px; font-size: .75rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; color: var(--dim);
+      border: 1px solid var(--border); transition: all .3s;
+    }
+    .phase-badge.lobby    { }
+    .phase-badge.playing  { background: rgba(35,209,139,.15); color: var(--green); border-color: rgba(35,209,139,.3); }
+    .phase-badge.discussion { background: rgba(237,66,69,.15); color: var(--danger); border-color: rgba(237,66,69,.3); }
+    .phase-badge.voting   { background: rgba(255,215,0,.15); color: var(--gold); border-color: rgba(255,215,0,.3); }
+    .phase-badge.results  { background: rgba(88,101,242,.15); color: var(--accent2); border-color: rgba(88,101,242,.3); }
+    .phase-badge.ended    { background: rgba(237,66,69,.15); color: var(--danger); border-color: rgba(237,66,69,.3); }
+
+    /* ── 3-COLUMN LAYOUT ── */
+    .host-body {
+      flex: 1; display: grid;
+      grid-template-columns: 260px 1fr 320px;
+      min-height: 0; overflow: hidden;
+    }
+
+    /* LEFT COL */
+    .host-left {
+      background: var(--navy); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column;
+      align-items: center; padding: 24px 16px;
+      gap: 20px; overflow-y: auto;
+    }
+    .join-instruction { font-size: .72rem; color: var(--dim); letter-spacing: 3px; text-transform: uppercase; }
+    .join-url { font-size: 1rem; font-weight: 900; color: var(--gold); }
+    #qr-container {
+      background: #fff; border-radius: 12px; padding: 8px;
+      box-shadow: 0 0 24px rgba(255,215,0,.15);
+    }
+    #qr-container canvas, #qr-container img { display: block; border-radius: 4px; }
+    .code-label { font-size: .7rem; color: var(--dim); letter-spacing: 3px; text-transform: uppercase; text-align: center; }
+    .game-code {
+      font-size: 3.8rem; font-weight: 900; letter-spacing: 10px;
+      color: var(--gold); text-shadow: 0 0 24px rgba(255,215,0,.35);
+      line-height: 1; text-align: center;
+    }
+    .left-stats { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+    .left-stat {
+      background: var(--panel); border-radius: 10px; padding: 10px 14px;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+    .left-stat-label { font-size: .65rem; color: var(--dim); letter-spacing: 1px; text-transform: uppercase; }
+    .left-stat-value { font-weight: 900; font-size: .95rem; }
+
+    /* CENTRE: players */
+    .host-centre {
+      background: var(--panel); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .section-header {
+      background: var(--panel2); padding: 11px 16px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border); flex-shrink: 0;
+    }
+    .section-header h3 { font-size: .8rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; flex: 1; }
+    .count-badge { background: var(--accent); border-radius: 20px; font-size: .72rem; font-weight: 900; padding: 3px 10px; }
+
+    #players-grid {
+      flex: 1; overflow-y: auto; padding: 12px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px; align-content: start;
+    }
+
+    .player-card {
+      background: var(--panel2); border-radius: 12px;
+      padding: 10px 10px 8px; display: flex; align-items: center; gap: 8px;
+      border: 1px solid var(--border); position: relative;
+      /* NO animation on refresh */
+    }
+    .player-card.is-dead { opacity: .42; }
+    .player-card.is-dead .player-name-text { text-decoration: line-through; color: var(--dim); }
+    .player-card.is-impostor { border-color: rgba(237,66,69,.45); background: rgba(197,17,17,.08); }
+
+    /* Player sprite: white.png tinted via CSS filter */
+    .player-sprite {
+      width: 38px; height: 38px;
+      flex-shrink: 0; image-rendering: pixelated;
+      /* color applied via inline filter */
+    }
+
+    .player-info { flex: 1; min-width: 0; }
+    .player-name-text { font-weight: 700; font-size: .8rem; word-break: break-all; line-height: 1.3; }
+    .player-tag-row { display: flex; gap: 4px; margin-top: 3px; flex-wrap: wrap; }
+    .ptag {
+      font-size: .58rem; font-weight: 900; border-radius: 4px;
+      padding: 1px 5px; letter-spacing: .4px; line-height: 1.5;
+    }
+    .ptag-host     { background: var(--gold);   color: #000; }
+    .ptag-impostor { background: var(--danger);  color: #fff; }
+    .ptag-dead     { background: var(--dim);     color: #000; }
+    .ptag-voted    { background: var(--green);   color: #000; }
+    .ptag-dc       { background: var(--panel3);  color: var(--dim); }
+
+    /* RIGHT: chat */
+    .host-right {
+      background: var(--navy); display: flex; flex-direction: column; overflow: hidden;
+    }
+    .chat-header { background: var(--panel2); padding: 11px 16px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .chat-header h3 { font-size: .8rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; }
+    #chat-log { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+    .chat-msg {
+      background: var(--panel); border-radius: 8px; padding: 7px 10px;
+      font-size: .78rem; line-height: 1.4;
+      border-left: 3px solid var(--border);
+    }
+    .chat-name { font-weight: 900; font-size: .8rem; }
+    .chat-text { color: var(--dim); margin-top: 2px; word-break: break-word; }
+    .chat-empty { color: var(--dim); font-size: .85rem; text-align: center; padding: 24px; }
+
+    @keyframes zoomIn { from { opacity:0; transform:scale(.5); } to { opacity:1; transform:scale(1); } }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 920px) {
+      .host-body { grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; }
+      .host-left { grid-row: 1; grid-column: 1 / 3; flex-direction: row; flex-wrap: wrap; padding: 16px; gap: 16px; justify-content: space-around; border-right: none; border-bottom: 1px solid var(--border); }
+      .game-code { font-size: 3rem; letter-spacing: 7px; }
+      .host-centre { grid-column: 1; }
+      .host-right  { grid-column: 2; }
+      #players-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .host-body { grid-template-columns: 1fr; }
+      .host-left { grid-column: 1; }
+      .host-centre { grid-column: 1; }
+      .host-right  { grid-column: 1; min-height: 180px; }
+      #players-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ LANDING ════ -->
+<section class="screen active" id="landing">
+  <div class="logo-wrap">
+    <img src="bannerLogo_AmongUs.png" alt="Among Nobody"
+         onerror="this.style.display='none';document.getElementById('text-logo').style.display='block'" />
+    <h1 id="text-logo" style="display:none;font-size:2.6rem;font-weight:900;letter-spacing:2px;
+        background:linear-gradient(135deg,#c51111,#5e73e6);-webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;text-align:center">AMONG NOBODY</h1>
+  </div>
+
+  <p class="landing-title">Host Dashboard</p>
+
+  <div class="card">
+    <h2>Watch by Username</h2>
+    <p style="color:var(--dim);font-size:.85rem;margin-bottom:12px">Enter the host's username to track their lobby.</p>
+    <div class="input-row">
+      <input type="text" id="username-input" placeholder="Host username…" maxlength="20" />
+      <button id="watch-btn">Watch</button>
+    </div>
+  </div>
+
+  <div class="divider">or</div>
+
+  <div class="card">
+    <h2>Browse Servers
+      <button class="ghost" id="refresh-btn" style="float:right;padding:5px 12px;font-size:.75rem">Refresh</button>
+    </h2>
+    <div id="server-list">
+      <div class="server-empty" id="server-list-empty">Connecting to among.sillyprootsoda.com…</div>
+    </div>
+  </div>
+
+  <div id="connect-status">Connecting…</div>
+</section>
+
+<!-- ════ WAITING ════ -->
+<section class="screen" id="waiting">
+  <div class="crewmate-wrap">
+    <div class="pulse-ring"></div>
+    <svg class="crewmate-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="50" cy="95" rx="35" ry="18" fill="#1b1b33"/>
+      <path d="M20 65 Q15 95 30 105 Q50 115 70 105 Q85 95 80 65 Z" fill="#5865f2"/>
+      <ellipse cx="50" cy="55" rx="28" ry="32" fill="#5865f2"/>
+      <ellipse cx="50" cy="42" rx="20" ry="22" fill="#a0c0ff" opacity=".85"/>
+      <defs>
+        <radialGradient id="vs" cx="35%" cy="35%">
+          <stop offset="0%" stop-color="#fff" stop-opacity=".5"/>
+          <stop offset="100%" stop-color="#6090dd" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="50" cy="42" rx="20" ry="22" fill="url(#vs)"/>
+      <rect x="15" y="72" width="14" height="22" rx="6" fill="#5865f2"/>
+      <rect x="71" y="72" width="14" height="22" rx="6" fill="#5865f2"/>
+    </svg>
+  </div>
+  <div>
+    <div class="waiting-title">Waiting for <span class="waiting-name" id="waiting-name">Host</span><span class="dots"></span></div>
+    <p class="waiting-sub" style="margin-top:8px">Watching <strong id="waiting-mode">username</strong> on <code>among.sillyprootsoda.com</code></p>
+    <p class="waiting-sub" style="margin-top:6px" id="waiting-poll-status">Polling every 2 seconds…</p>
+  </div>
+  <button class="danger" id="waiting-back">Cancel</button>
+</section>
+
+<!-- ════ HOSTING ════ -->
+<section class="screen" id="hosting">
+  <header class="host-header">
+    <img src="bannerLogo_AmongUs.png" alt="Among Nobody" onerror="this.style.display='none'"/>
+    <span class="host-header-title">Host Dashboard</span>
+    <span class="phase-badge" id="phase-badge">Lobby</span>
+    <button class="ghost" id="header-back">Stop</button>
+  </header>
+
+  <div class="host-body">
+    <!-- LEFT: code + QR -->
+    <div class="host-left">
+      <div>
+        <p class="join-instruction" style="text-align:center;margin-bottom:4px">Join at</p>
+        <p class="join-url">au.sillyprootsoda.com</p>
+      </div>
+      <div id="qr-container"></div>
+      <div>
+        <p class="code-label" style="margin-bottom:6px">Room Code</p>
+        <div class="game-code" id="game-code-display">????</div>
+      </div>
+      <div class="left-stats">
+        <div class="left-stat">
+          <span class="left-stat-label">Host</span>
+          <span class="left-stat-value" id="stat-host">—</span>
+        </div>
+        <div class="left-stat">
+          <span class="left-stat-label">Players</span>
+          <span class="left-stat-value" id="stat-players">0 / 10</span>
+        </div>
+        <div class="left-stat">
+          <span class="left-stat-label">Server</span>
+          <span class="left-stat-value" style="font-size:.75rem">among.sillyprootsoda.com</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTRE: players grid -->
+    <div class="host-centre">
+      <div class="section-header">
+        <h3>Players</h3>
+        <span class="count-badge" id="player-count-badge">0</span>
+      </div>
+      <div id="players-grid"></div>
+    </div>
+
+    <!-- RIGHT: chat -->
+    <div class="host-right">
+      <div class="chat-header section-header">
+        <h3>Meeting Chat</h3>
+      </div>
+      <div id="chat-log">
+        <div class="chat-empty" id="chat-empty">Chat visible during meetings</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<script>
+'use strict';
+
+// ── CONFIG ─────────────────────────────────────────────────────────────────
+const WS_URL      = 'wss://among.sillyprootsoda.com';
+const JOIN_URL    = 'https://au.sillyprootsoda.com';
+const POLL_MS     = 2000;
+const BROADCAST_VERSION = 1;
+
+// Among Us colour map matching gamedata.py COLOR_HEX
+const COLOR_HEX = [
+  '#c51111','#132ed1','#117f2d','#ed54ba','#ef7d0d',
+  '#f5f557','#3f474e','#d6e0f0','#6b2fbb','#71491e',
+  '#38fedc','#50ef39',
+];
+
+// ── HAZEL HELPERS (for game list browsing over raw WS) ───────────────────
+function writePacked(val) {
+  const out = []; val = val >>> 0;
+  do { let b = val & 0x7f; val >>>= 7; if (val) b |= 0x80; out.push(b); } while (val);
+  return out;
+}
+function readPacked(view, offset) {
+  let val = 0, shift = 0, pos = offset;
+  while (true) { const b = view.getUint8(pos++); val |= (b & 0x7f) << shift; if (!(b & 0x80)) break; shift += 7; }
+  return { val, pos };
+}
+function readString(view, offset) {
+  const { val: len, pos } = readPacked(view, offset);
+  const bytes = new Uint8Array(view.buffer, view.byteOffset + pos, len);
+  return { str: new TextDecoder().decode(bytes), pos: pos + len };
+}
+function gameIdToCode(id) {
+  return String.fromCharCode(id & 0xff,(id>>8)&0xff,(id>>16)&0xff,(id>>24)&0xff);
+}
+function buildHello(name) {
+  const nameBytes = new TextEncoder().encode(name);
+  const packed = writePacked(nameBytes.length);
+  const buf = new Uint8Array(1 + 4 + packed.length + nameBytes.length);
+  let i = 0;
+  buf[i++] = 0x08;
+  buf[i++] = BROADCAST_VERSION & 0xff; buf[i++]=0; buf[i++]=0; buf[i++]=0;
+  packed.forEach(b => buf[i++] = b);
+  nameBytes.forEach(b => buf[i++] = b);
+  return buf;
+}
+function buildGetGameList() {
+  return new Uint8Array([0x01, 0x00, 0x00, 0x01, 0x00, 0x09, 0x01]);
+}
+function parseGameList(data) {
+  const view = new DataView(data.buffer || data);
+  if (view.byteLength < 4 || view.getUint8(0) !== 0x01) return null;
+  let offset = 3; const games = [];
+  while (offset + 3 <= view.byteLength) {
+    const msgLen = view.getUint8(offset) | (view.getUint8(offset+1) << 8);
+    const tag    = view.getUint8(offset+2);
+    offset += 3;
+    const msgEnd = offset + msgLen;
+    if (tag === 9 && offset < msgEnd) {
+      const { val: count, pos: p0 } = readPacked(view, offset);
+      let pos = p0;
+      for (let i = 0; i < count && pos + 8 <= msgEnd; i++) {
+        const rawId = view.getInt32(pos, true); pos += 4;
+        view.getUint8(pos); pos++;
+        const players = view.getUint8(pos); pos++;
+        const maxP    = view.getUint8(pos); pos++;
+        const { pos: p2 } = readPacked(view, pos); pos = p2;
+        const { str: hostName, pos: p3 } = readString(view, pos); pos = p3;
+        games.push({ code: gameIdToCode(rawId), hostName, players, maxPlayers: maxP });
+      }
+    }
+    offset = msgEnd;
+  }
+  return games;
+}
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let ws = null, pollTimer = null, spectatorWS = null;
+let watchMode = null, watchTarget = null;
+let activeGame = null, pollCount = 0;
+let lastEventSeq = -1;
+let lastKnownGames = [];
+
+// Dashboard state from spectator feed
+let dashState = null;
+
+const screens = {
+  landing: document.getElementById('landing'),
+  waiting: document.getElementById('waiting'),
+  hosting: document.getElementById('hosting'),
+};
+
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.remove('active'));
+  screens[name].classList.add('active');
+}
+
+// ── WEBSOCKET (game list) ──────────────────────────────────────────────────
+function connectWS(onReady) {
+  if (ws && ws.readyState === WebSocket.OPEN) { onReady(); return; }
+  setStatus('Connecting…', '');
+  ws = new WebSocket(WS_URL);
+  ws.binaryType = 'arraybuffer';
+  ws.onopen = () => { setStatus('Connected', 'ok'); ws.send(buildHello('Dashboard')); onReady(); };
+  ws.onerror = () => { setStatus('Connection error', 'err'); document.getElementById('server-list-empty').textContent = 'Could not reach server'; };
+  ws.onclose = () => { setStatus('Disconnected', 'err'); ws = null; };
+  ws.onmessage = e => {
+    if (!(e.data instanceof ArrayBuffer)) return;
+    const games = parseGameList(e.data);
+    if (games !== null) handleGameList(games);
+  };
+}
+
+function requestGameList() {
+  if (!ws || ws.readyState !== WebSocket.OPEN) { connectWS(requestGameList); return; }
+  ws.send(buildGetGameList());
+}
+
+function handleGameList(games) {
+  lastKnownGames = games;
+  renderServerList(games);
+  if (watchMode === 'username') {
+    const match = games.find(g => g.hostName.toLowerCase() === watchTarget.toLowerCase());
+    if (match) { showHostScreen(match); stopPolling(); return; }
+    pollCount++;
+    document.getElementById('waiting-poll-status').textContent = `Polled ${pollCount} time${pollCount!==1?'s':''}… no lobby yet.`;
+  }
+  if (watchMode === 'server') {
+    const match = games.find(g => g.code === watchTarget);
+    if (match) showHostScreen(match);
+  }
+}
+
+function renderServerList(games) {
+  const list = document.getElementById('server-list');
+  if (!games.length) { list.innerHTML = '<div class="server-empty">No public rooms open right now.</div>'; return; }
+  list.innerHTML = games.map(g => `
+    <div class="server-row" onclick="selectServer('${escAttr(g.code)}')">
+      <div class="server-code">${escHtml(g.code)}</div>
+      <div class="server-info">
+        <div class="server-host">${escHtml(g.hostName)}</div>
+        <div class="server-players">${g.players} / ${g.maxPlayers} players</div>
+      </div>
+      <div class="server-badge">OPEN</div>
+    </div>`).join('');
+}
+
+function selectServer(code) {
+  watchMode = 'server'; watchTarget = code;
+  const g = lastKnownGames.find(x => x.code === code);
+  if (g) showHostScreen(g);
+}
+
+// ── SPECTATOR WS ───────────────────────────────────────────────────────────
+function connectSpectator(code) {
+  if (spectatorWS) { try { spectatorWS.close(); } catch(e){} spectatorWS = null; }
+  const url = `${WS_URL}/spectate/${code}`;
+  spectatorWS = new WebSocket(url);
+  spectatorWS.onmessage = e => {
+    try { handleDashUpdate(JSON.parse(e.data)); } catch(err) { console.error('dash parse', err); }
+  };
+  spectatorWS.onclose = () => { spectatorWS = null; };
+  spectatorWS.onerror = () => {};
+}
+
+function handleDashUpdate(data) {
+  if (data.type === 'error') return;
+  dashState = data;
+
+  // Detect new events by event_seq
+  const isNew = data.eventSeq !== lastEventSeq;
+  if (isNew) {
+    lastEventSeq = data.eventSeq;
+    handleNewEvent(data.lastEvent, data);
+  }
+
+  renderDashboard(data);
+}
+
+function handleNewEvent(evt, data) {
+  // overlay removed — no meeting popups
+}
+
+
+
+// ── HOST SCREEN ────────────────────────────────────────────────────────────
+function showHostScreen(game) {
+  activeGame = game;
+  document.getElementById('game-code-display').textContent = game.code;
+  document.getElementById('stat-host').textContent = game.hostName;
+  document.getElementById('stat-players').textContent = `${game.players} / ${game.maxPlayers}`;
+  document.getElementById('player-count-badge').textContent = game.players;
+
+  // QR code
+  const qrEl = document.getElementById('qr-container');
+  qrEl.innerHTML = '';
+  if (typeof QRCode !== 'undefined') {
+    new QRCode(qrEl, { text: JOIN_URL, width: 180, height: 180, colorDark: '#000', colorLight: '#fff', correctLevel: QRCode.CorrectLevel.H });
+  }
+
+  showScreen('hosting');
+  connectSpectator(game.code);
+
+  // Fallback polling for player count
+  stopPolling();
+  pollTimer = setInterval(() => {
+    requestGameList();
+    // If spectator WS died, reconnect
+    if (!spectatorWS || spectatorWS.readyState === WebSocket.CLOSED) {
+      connectSpectator(game.code);
+    }
+  }, POLL_MS);
+}
+
+// ── RENDER DASHBOARD ───────────────────────────────────────────────────────
+function renderDashboard(data) {
+  // Update phase badge
+  const phaseBadge = document.getElementById('phase-badge');
+  const phaseLabel = { lobby:'Lobby', playing:'In Game', discussion:'Discussion', voting:'Voting', results:'Results', ended:'Ended' };
+  phaseBadge.textContent = phaseLabel[data.phase] || data.phase;
+  phaseBadge.className = `phase-badge ${data.phase}`;
+
+  // Update player count
+  const total = data.players.length;
+  document.getElementById('stat-players').textContent = `${total} / 10`;
+  document.getElementById('player-count-badge').textContent = total;
+
+  // Update host name
+  const hostP = data.players.find(p => p.id === data.hostId);
+  if (hostP) document.getElementById('stat-host').textContent = hostP.name;
+
+  // Render player cards - NO animation on refresh
+  renderPlayerCards(data);
+
+  // Render chat
+  renderChat(data.chat);
+
+
+}
+
+function renderPlayerCards(data) {
+  const grid = document.getElementById('players-grid');
+  if (!data.players.length) {
+    grid.innerHTML = '<div style="color:var(--dim);font-size:.85rem;padding:16px;grid-column:1/-1">No players yet…</div>';
+    return;
+  }
+
+  // Build lookup for who has voted
+  const voterSet = new Set(Object.keys(data.votes || {}).map(Number));
+
+  const html = data.players.map(p => {
+    const isHost = p.id === data.hostId;
+    const hasVoted = voterSet.has(p.id);
+
+    const isInGame = data.phase !== 'lobby';
+
+    let classes = 'player-card';
+
+    const tags = [];
+    if (isHost) tags.push('<span class="ptag ptag-host">HOST</span>');
+    if (p.isDisconnected) tags.push('<span class="ptag ptag-dc">LEFT</span>');
+
+    return `<div class="${classes}">
+      <canvas class="player-sprite" width="60" height="60" data-color="${escAttr(COLOR_HEX[p.colorId] || '#888888')}"></canvas>
+      <div class="player-info">
+        <div class="player-name-text">${escHtml(p.name && p.name !== '?' ? p.name : '')}</div>
+        ${tags.length ? `<div class="player-tag-row">${tags.join('')}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  grid.innerHTML = html;
+  tintSprites(grid);
+
+}
+
+// Tint white.png sprites by drawing them onto canvases with multiply blend
+const _spriteImg = new Image();
+_spriteImg.src = 'white.png';
+function tintSprites(container) {
+  container.querySelectorAll('canvas.player-sprite').forEach(canvas => {
+    const hex = canvas.dataset.color || '#888888';
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    // Draw white sprite first
+    const draw = () => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(_spriteImg, 0, 0, w, h);
+      // Multiply blend: tint white pixels to the target colour
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillStyle = hex;
+      ctx.fillRect(0, 0, w, h);
+      // Restore alpha from original (multiply kills transparency)
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(_spriteImg, 0, 0, w, h);
+      ctx.globalCompositeOperation = 'source-over';
+    };
+    if (_spriteImg.complete && _spriteImg.naturalWidth) draw();
+    else _spriteImg.onload = draw;
+  });
+}
+
+function renderChat(messages) {
+  const log = document.getElementById('chat-log');
+  const empty = document.getElementById('chat-empty');
+  if (!messages || !messages.length) {
+    if (empty) empty.style.display = 'block';
+    [...log.querySelectorAll('.chat-msg')].forEach(el => el.remove());
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+
+  // Only re-render if message count changed
+  const existing = log.querySelectorAll('.chat-msg').length;
+  if (existing === messages.length) return;
+
+  log.innerHTML = '';
+  if (empty) { empty.style.display = 'none'; log.appendChild(empty); }
+
+  messages.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'chat-msg';
+    div.style.borderLeftColor = m.colorHex || 'var(--border)';
+    div.innerHTML = `<div class="chat-name" style="color:${escAttr(m.colorHex)}">${escHtml(m.playerName)}</div>
+                     <div class="chat-text">${escHtml(m.text)}</div>`;
+    log.appendChild(div);
+  });
+  log.scrollTop = log.scrollHeight;
+}
+
+
+
+// ── POLLING ────────────────────────────────────────────────────────────────
+function startPolling() {
+  stopPolling(); pollCount = 0;
+  requestGameList();
+  pollTimer = setInterval(requestGameList, POLL_MS);
+}
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+// ── UI EVENTS ──────────────────────────────────────────────────────────────
+document.getElementById('watch-btn').onclick = () => {
+  const name = document.getElementById('username-input').value.trim();
+  if (!name) { document.getElementById('username-input').focus(); return; }
+  watchMode = 'username'; watchTarget = name;
+  document.getElementById('waiting-name').textContent = name;
+  document.getElementById('waiting-mode').textContent = `"${name}"`;
+  showScreen('waiting');
+  connectWS(startPolling);
+};
+
+document.getElementById('username-input').onkeydown = e => {
+  if (e.key === 'Enter') document.getElementById('watch-btn').click();
+};
+
+document.getElementById('waiting-back').onclick = () => {
+  stopPolling(); watchMode = null; showScreen('landing');
+};
+
+document.getElementById('header-back').onclick = () => {
+  stopPolling();
+  if (spectatorWS) { try { spectatorWS.close(); } catch(e){} spectatorWS = null; }
+  activeGame = null; watchMode = null; dashState = null; lastEventSeq = -1;
+  showScreen('landing');
+};
+
+document.getElementById('refresh-btn').onclick = () => connectWS(requestGameList);
+
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function setStatus(msg, cls) {
+  const el = document.getElementById('connect-status');
+  el.textContent = msg; el.className = cls || '';
+}
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function escAttr(s) { return escHtml(s); }
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+connectWS(requestGameList);
+setInterval(() => {
+  if (document.getElementById('landing').classList.contains('active')) requestGameList();
+}, 5000);
+</script>
+</body>
+</html>
