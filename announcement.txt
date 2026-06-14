@@ -1,6 +1,6 @@
 <align=center><size=150%><b><color=#FFD700>Welcome to Among Us for the web!</color></b></size></align>
 
-Welcome to the new season! Here is what we added:
+Welcome to AUFTW! Here is what we added:
 
 • <color=#00FF00><b>NEW:</b></color> Got servers working! There are still some bugs but I am working on it!
 • <color=#FF5555><b>FIXED:</b></color> Fixed being able to see thorugh walls.
