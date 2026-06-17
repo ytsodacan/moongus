@@ -1,9 +1,7 @@
 <align=center><size=150%><b><color=#FFD700>Welcome to Among Us for the web!</color></b></size></align>
-
-Welcome to AUFTW! Here is what we added:
-
-• <color=#00FF00><b>NEW:</b></color> Got servers working! There are still some bugs but I am working on it!
-• <color=#FF5555><b>FIXED:</b></color> Fixed being able to see thorugh walls.
+Welcome to AUFTW! Here is what we added in our latest update:
+• <color=#00FF00><b>NEW:</b></color> Shadows are now fully functional!
+• <color=#FF5555><b>FIXED:</b></color> Emergency meetings are now working correctly.
 • <color=#3399ff><b>IN THE WORKS:</b></color> Web dashboard for hosting games at school!
-
+<color=#FF0000>⚠️ <b>EXPECT BUGS!</b></color> As we continue to refine the game, you may encounter unexpected issues. We appreciate your patience as we iron them out!
 <size=80%><i>Thanks for playing!</i></size>
