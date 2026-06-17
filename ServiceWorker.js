@@ -1,9 +1,9 @@
 const cacheName = "XeraGamesLLC-Among Us-2019.2.15";
 const contentToCache = [
-    "Build/v1fix.loader.js",
-    "Build/v1fix.framework.js",
-    "Build/v1fix.data",
-    "Build/v1fix.wasm",
+    "Build/v3.loader.js",
+    "Build/v3.framework.js",
+    "Build/v3.data",
+    "Build/v3.wasm",
     "TemplateData/style.css"
 
 ];
