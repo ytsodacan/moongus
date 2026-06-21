@@ -7,6 +7,6 @@ Welcome to AUFTW! Here is what’s new in our latest update:
 • <color=#FF5555>FIXED: Security Cameras are working perfectly again.
 • <color=#FF5555>FIXED: Emergency meetings and the "Lights Out" sabotage have been resolved.
 
-<color=#FF0000>⚠️ EXPECT BUGS! We are constantly tinkering under the hood to get this running smoothly. If you run into any issues, thanks for sticking with us!
+<color=#FF0000>⚠️ EXPECT BUGS!
 
 <size=80%>Thanks for playing!
