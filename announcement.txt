@@ -2,11 +2,11 @@
 
 Welcome to AUFTW! Here is what’s new in our latest update:
 
-• <color=#00FF00>NEW: **Task Highlights** are now active to help you find your objectives!
-• <color=#00FF00>NEW: Shadows are now fully functional (including proper behavior during "Lights Out").
-• <color=#FF5555>FIXED: Security Cameras are working perfectly again.
-• <color=#FF5555>FIXED: Emergency meetings and the "Lights Out" sabotage have been resolved.
+• <color=#00FF00><size=100%>NEW: **Task Highlights** are now active to help you find your objectives!
+• <color=#00FF00><size=100%>NEW: Shadows are now fully functional (including proper behavior during "Lights Out").
+• <color=#FF5555><size=100%>FIXED: Security Cameras are working perfectly again.
+• <color=#FF5555><size=100%>FIXED: Emergency meetings and the "Lights Out" sabotage have been resolved.
 
-<color=#FF0000>⚠️ EXPECT BUGS!
+<color=#FF0000><size=80%>⚠️ EXPECT BUGS!
 
 <size=80%>Thanks for playing!
