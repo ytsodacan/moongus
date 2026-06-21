@@ -1,7 +1,12 @@
-<align=center><size=150%><b><color=#FFD700>Welcome to Among Us for the web!</color></b></size></align>
-Welcome to AUFTW! Here is what we added in our latest update:
-• <color=#00FF00><b>NEW:</b></color> Shadows are now fully functional!
-• <color=#FF5555><b>FIXED:</b></color> Emergency meetings are now working correctly.
-• <color=#3399ff><b>IN THE WORKS:</b></color> Web dashboard for hosting games at school!
-<color=#FF0000>⚠️ <b>EXPECT BUGS!</b></color> As we continue to refine the game, you may encounter unexpected issues. We appreciate your patience as we iron them out!
-<size=80%><i>Thanks for playing!</i></size>
+<align=center><size=150%><color=#FFD700>Welcome to Among Us for the web!
+
+Welcome to AUFTW! Here is what’s new in our latest update:
+
+• <color=#00FF00>NEW: **Task Highlights** are now active to help you find your objectives!
+• <color=#00FF00>NEW: Shadows are now fully functional (including proper behavior during "Lights Out").
+• <color=#FF5555>FIXED: Security Cameras are working perfectly again.
+• <color=#FF5555>FIXED: Emergency meetings and the "Lights Out" sabotage have been resolved.
+
+<color=#FF0000>⚠️ EXPECT BUGS! We are constantly tinkering under the hood to get this running smoothly. If you run into any issues, thanks for sticking with us!
+
+<size=80%>Thanks for playing!
