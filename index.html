@@ -57,12 +57,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/v3.loader.js";
+      var loaderUrl = buildUrl + "/v4.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/v3.data",
-        frameworkUrl: buildUrl + "/v3.framework.js",
-        codeUrl: buildUrl + "/v3.wasm",
+        dataUrl: buildUrl + "/v4.data",
+        frameworkUrl: buildUrl + "/v4.framework.js",
+        codeUrl: buildUrl + "/v4.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "XeraGamesLLC",
         productName: "Among Us",
@@ -76,16 +76,6 @@
         // },
       };
 
-
-    
-  document.addEventListener('keydown', function(event) {
-    if (event.key === '`' || event.key === '~') {
-      location.reload();
-    }
-  });
-
-
-      
       // By default Unity keeps WebGL canvas render target size matched with
       // the DOM size of the canvas element (scaled by window.devicePixelRatio)
       // Set this to false if you want to decouple this synchronization from
