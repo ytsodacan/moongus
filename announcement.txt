@@ -1,7 +1,7 @@
 <align=center><size=110%><color=#FFD700>Welcome to Among Us for the web!
 <size=80%><color=#FFFFFF>Welcome to AUFTW! Here is what’s new:
 
-<align=left><size=65%><color=#00FF00><b>UPDATE 4.2</b>
+<align=left><size=65%><color=#00FF00><b>UPDATE 4.0</b>
 <color=#00FF00>• NEW: <color=#FFF>Task Highlights active!
 <color=#FF5555>• FIXED: <color=#FFF>Security Cameras working.
 <color=#FF5555>• FIXED: <color=#FFF>Meetings & Lights Out fixed.
