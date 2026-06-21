@@ -1,9 +1,15 @@
-<align=center><size=130%><color=#FFD700>Welcome to Among Us for the web!
+<align=center><size=110%><color=#FFD700>Welcome to Among Us for the web!
+<size=80%><color=#FFFFFF>Welcome to AUFTW! Here is what’s new:
 
-Welcome to AUFTW! Here is what’s new in our latest update:
+<align=left><size=65%><color=#00FF00><b>UPDATE 4.2</b>
+<color=#00FF00>• NEW: <color=#FFF>Task Highlights active!
+<color=#FF5555>• FIXED: <color=#FFF>Security Cameras working.
+<color=#FF5555>• FIXED: <color=#FFF>Meetings & Lights Out fixed.
 
-<color=#00FF00><size=80%>NEW: **Task Highlights** are now active to help you find your objectives!
-<color=#FF5555><size=80%>FIXED: Security Cameras are working perfectly again.
-<color=#FF5555><size=80%>FIXED: Emergency meetings and the "Lights Out" sabotage have been resolved.
-<color=#FF0000><size=60%>EXPECT BUGS!
-<size=80%>Thanks for playing!
+<pos=52%><color=#00FFFF><b>UPDATE 4.1</b>
+<pos=52%><color=#FF5555>• FIXED: <color=#FFF>Star graphics/layering.
+<pos=52%><color=#FF5555>• FIXED: <color=#FFF>Version date display.
+<pos=52%> 
+
+<align=center><size=55%><color=#FF0000>EXPECT BUGS!
+<size=70%><color=#FFF>Thanks for playing!
